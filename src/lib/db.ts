@@ -37,6 +37,32 @@ export function getDb(): Database.Database {
     CREATE INDEX IF NOT EXISTS idx_entries_status ON entries(status);
   `);
 
+  // Migrate: recreate table if 'wishlist' type not yet in CHECK constraint
+  const tableInfo = db.prepare(`SELECT sql FROM sqlite_master WHERE type='table' AND name='entries'`).get() as { sql: string } | undefined;
+  if (tableInfo && !tableInfo.sql.includes('wishlist')) {
+    db.exec(`
+      BEGIN;
+      ALTER TABLE entries RENAME TO entries_old;
+      CREATE TABLE entries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        type TEXT NOT NULL CHECK (type IN ('income', 'expense', 'debt_owed_to_me', 'debt_i_owe', 'bokap_money', 'todo', 'wishlist')),
+        amount INTEGER NOT NULL,
+        party TEXT,
+        note TEXT,
+        status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'done')),
+        due_date TEXT,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+      INSERT INTO entries SELECT * FROM entries_old;
+      DROP TABLE entries_old;
+      CREATE INDEX IF NOT EXISTS idx_entries_type ON entries(type);
+      CREATE INDEX IF NOT EXISTS idx_entries_created ON entries(created_at);
+      CREATE INDEX IF NOT EXISTS idx_entries_status ON entries(status);
+      COMMIT;
+    `);
+  }
+
   dbInstance = db;
   return db;
 }

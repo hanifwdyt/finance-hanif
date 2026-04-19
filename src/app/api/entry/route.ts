@@ -8,6 +8,7 @@ const VALID_TYPES: EntryType[] = [
   'expense',
   'debt_owed_to_me',
   'debt_i_owe',
+  'wishlist',
   'bokap_money',
   'todo',
 ];

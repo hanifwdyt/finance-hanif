@@ -22,7 +22,7 @@ export function getDb(): Database.Database {
   db.exec(`
     CREATE TABLE IF NOT EXISTS entries (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      type TEXT NOT NULL CHECK (type IN ('income', 'expense', 'debt_owed_to_me', 'debt_i_owe', 'bokap_money', 'todo')),
+      type TEXT NOT NULL CHECK (type IN ('income', 'expense', 'debt_owed_to_me', 'debt_i_owe', 'bokap_money', 'todo', 'wishlist')),
       amount INTEGER NOT NULL,
       party TEXT,
       note TEXT,

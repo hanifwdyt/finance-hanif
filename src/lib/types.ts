@@ -4,7 +4,8 @@ export type EntryType =
   | 'debt_owed_to_me' // Orang lain utang ke gue
   | 'debt_i_owe'      // Gue utang ke orang
   | 'bokap_money'     // Uang bokap yang dititipin/dikelola
-  | 'todo';           // Todo duit (rencana, alokasi)
+  | 'todo'            // Todo duit (rencana, alokasi)
+  | 'wishlist';       // Wishlist barang yang mau dibeli
 
 export interface Entry {
   id: number;
@@ -34,6 +35,7 @@ export const TYPE_LABELS: Record<EntryType, string> = {
   debt_i_owe: 'Utang',
   bokap_money: 'Uang Bokap',
   todo: 'Todo Duit',
+  wishlist: 'Wishlist',
 };
 
 export const TYPE_COLORS: Record<EntryType, string> = {
@@ -43,4 +45,5 @@ export const TYPE_COLORS: Record<EntryType, string> = {
   debt_i_owe: 'text-amber-400',
   bokap_money: 'text-violet-400',
   todo: 'text-slate-400',
+  wishlist: 'text-pink-400',
 };

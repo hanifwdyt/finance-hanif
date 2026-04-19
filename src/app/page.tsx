@@ -14,6 +14,7 @@ function aggregate(rows: Array<{ type: string; status: string; total: number; co
     debt_i_owe: { open: 0, done: 0, openCount: 0, doneCount: 0 },
     bokap_money: { open: 0, done: 0, openCount: 0, doneCount: 0 },
     todo: { open: 0, done: 0, openCount: 0, doneCount: 0 },
+    wishlist: { open: 0, done: 0, openCount: 0, doneCount: 0 },
   };
   for (const row of rows) {
     const t = row.type as EntryType;
@@ -48,6 +49,7 @@ export default async function DashboardPage() {
   const incomeThisMonth = thisMonthTotal(entries, 'income');
   const expenseThisMonth = thisMonthTotal(entries, 'expense');
   const todosOpen = entries.filter((e) => e.type === 'todo' && e.status === 'open');
+  const wishlistOpen = entries.filter((e) => e.type === 'wishlist' && e.status === 'open');
   const timeline = entries.slice(0, 50);
 
   const today = new Date().toLocaleDateString('id-ID', {
@@ -116,6 +118,32 @@ export default async function DashboardPage() {
                   </div>
                   <div className="text-slate-300 font-mono text-sm ml-3">
                     {formatIDR(e.amount)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {wishlistOpen.length > 0 && (
+          <section className="mb-8">
+            <h2 className="text-xs uppercase tracking-widest text-slate-500 mb-3">Wishlist</h2>
+            <div className="space-y-2">
+              {wishlistOpen.map((e) => (
+                <div
+                  key={e.id}
+                  className="bg-slate-900/60 border border-pink-900/30 rounded-lg px-4 py-3 flex items-center justify-between"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="text-slate-200 text-sm truncate">
+                      {e.note ?? e.party ?? 'Wishlist'}
+                    </div>
+                    {e.party && e.note && (
+                      <div className="text-xs text-slate-500 mt-0.5">{e.party}</div>
+                    )}
+                  </div>
+                  <div className="text-pink-400 font-mono text-sm ml-3">
+                    {e.amount > 0 ? formatIDR(e.amount) : <span className="text-slate-600">budget?</span>}
                   </div>
                 </div>
               ))}
